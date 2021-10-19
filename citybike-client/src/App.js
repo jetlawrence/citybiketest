@@ -14,6 +14,12 @@ const App = () => {
   useEffect(() => {
     const { endpoint } = state;
     const socket = socketIOClient(endpoint);
+
+    socket.on("CityBike", (data) => {
+      console.log("Data from CityBike", data);
+    });
+
+    return () => socket.disconnect();
   }, []);
 
   const response = state?.response;
