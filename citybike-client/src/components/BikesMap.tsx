@@ -23,11 +23,6 @@ const BikesMap: React.FC<Props> = ({ stations = [], ...props }) => {
           return null;
         }
 
-        const position: [number, number] = [
-          station.latitude,
-          station.longitude,
-        ];
-
         return <StationMarker key={station.id} station={station} />;
       })}
     </MapContainer>
