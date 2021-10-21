@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import socketIOClient from "socket.io-client";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, Pane, TileLayer, Marker, Popup } from "react-leaflet";
 
 const App = () => {
   const [state, setState] = useState({
@@ -19,7 +19,9 @@ const App = () => {
       console.log("Data from CityBike", data);
     });
 
-    return () => socket.disconnect();
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const response = state?.response;
@@ -30,6 +32,7 @@ const App = () => {
       <h1> City Bikes in Miami </h1>
       <MapContainer center={position} zoom={state?.zoom}>
         <TileLayer
+          //@ts-ignore must be typescript error with the library itself
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
