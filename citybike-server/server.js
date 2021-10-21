@@ -27,7 +27,7 @@ io.on("connection", (socket) => {
     clearInterval(interval);
   }
 
-  interval = setInterval(() => getApiAndEmit(socket), 1000);
+  interval = setInterval(() => getApiAndEmit(socket), 5000);
   socket.on("disconnect", () => {
     console.log("Client disconnected");
     clearInterval(interval);
@@ -36,9 +36,9 @@ io.on("connection", (socket) => {
 
 const getApiAndEmit = (socket) => {
   axios
-    .get(constants.NETWORK_STATIONS_URL)
+    .get(constants.NETWORK_URL)
     .then((response) => {
-      socket.emit("CityBike", response.data.network.stations);
+      socket.emit("CityBike", response.data.network);
     })
     .catch((error) => {
       console.log(error);
