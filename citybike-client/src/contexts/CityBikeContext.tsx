@@ -17,7 +17,7 @@ export interface ICityBikeContext {
 
 const CityBikeContext = createContext<ICityBikeContext | undefined>(undefined);
 
-type BikesHistoryItem = {
+type CbHistoryItem = {
   timestamp: string;
   stations: IStation[];
 };
@@ -28,9 +28,9 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
     zoom: 13,
   });
   const [stations, setStations] = useState<IStation[]>([]);
-  const [history, setHistory] = useState<BikesHistoryItem[]>([]);
+  const [history, setHistory] = useState<CbHistoryItem[]>([]);
 
-  const pushToHistory = (item: BikesHistoryItem) =>
+  const pushToHistory = (item: CbHistoryItem) =>
     setHistory([
       ...(history.length > MAX_HISTORY_LENGTH
         ? history.slice(1, MAX_HISTORY_LENGTH)
@@ -100,6 +100,7 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
         //     ...station,
         //     free_bikes:
         //       i % 2 === 0 ? Math.floor(Math.random() * 11) : station.free_bikes,
+        //     timestamp: new Date().toISOString()
         //   })) ?? []
         // );
       }
