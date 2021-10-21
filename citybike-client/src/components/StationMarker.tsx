@@ -13,7 +13,7 @@ const StationMarkerSvg: React.FC<StationMarkerSvgProps> = ({
   let countColor = "#8b0000";
 
   if (freeBikesCount > 0) {
-    if (freeBikesCount > 5) {
+    if (freeBikesCount > 4) {
       countColor = "#228c22";
     } else {
       countColor = "#ff8c00";
