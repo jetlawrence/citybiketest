@@ -75,7 +75,7 @@ const StationMarkerSvg: React.FC<StationMarkerSvgProps> = ({
           className="chart-number"
           x="50%"
           y="50%"
-          text-anchor="middle"
+          textAnchor="middle"
           dy=".3em"
         >
           {freeBikesCount}
