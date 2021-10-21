@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   MapContainer,
   MapContainerProps,
-  Marker,
   TileLayer,
   useMap,
 } from "react-leaflet";
@@ -28,8 +27,6 @@ const ChangeView: React.FC<ChangeViewProps> = ({ center }) => {
 };
 
 const BikesMap: React.FC<Props> = ({ stations = [], ...props }) => {
-  const [hasLoadedView, setHasLoadedView] = useState(false);
-
   return (
     <MapContainer {...props}>
       {props.center && <ChangeView center={props.center} />}
