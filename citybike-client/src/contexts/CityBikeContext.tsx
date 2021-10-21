@@ -3,6 +3,8 @@ import socketIOClient from "socket.io-client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { API_DEV_ENDPOINT } from "../constants";
 
+const MAX_HISTORY_LENGTH = 20;
+
 type MapState = {
   position: [number, number];
   zoom: number;
@@ -15,12 +17,57 @@ export interface ICityBikeContext {
 
 const CityBikeContext = createContext<ICityBikeContext | undefined>(undefined);
 
+type BikesHistoryItem = {
+  timestamp: string;
+  stations: IStation[];
+};
+
 const CityBikeContextProvider: React.FC = ({ children }) => {
   const [mapState, setMapState] = useState<MapState>({
     position: [25.790654, -80.1300455],
     zoom: 13,
   });
   const [stations, setStations] = useState<IStation[]>([]);
+  const [history, setHistory] = useState<BikesHistoryItem[]>([]);
+
+  const pushToHistory = (item: BikesHistoryItem) =>
+    setHistory([
+      ...(history.length > MAX_HISTORY_LENGTH
+        ? history.slice(1, MAX_HISTORY_LENGTH)
+        : history),
+      item,
+    ]);
+
+  useEffect(() => {
+    if (!stations.length) {
+      return;
+    }
+
+    const latestTimestamp = new Date(
+      Math.max(
+        ...stations.map((station) =>
+          station.timestamp ? new Date(station.timestamp).getTime() : 0
+        )
+      )
+    ).toISOString();
+
+    const latestHistoryItemTimestamp = history.length
+      ? new Date(
+          Math.max(
+            ...history.map((item) =>
+              item.timestamp ? new Date(item.timestamp).getTime() : 0
+            )
+          )
+        ).toISOString()
+      : "";
+
+    if (latestTimestamp !== latestHistoryItemTimestamp) {
+      pushToHistory({
+        timestamp: latestTimestamp,
+        stations,
+      });
+    }
+  }, [stations]);
 
   useEffect(() => {
     const socket = socketIOClient(API_DEV_ENDPOINT);
