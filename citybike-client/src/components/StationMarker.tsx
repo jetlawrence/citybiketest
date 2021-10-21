@@ -2,13 +2,17 @@ import L from "leaflet";
 import { Marker } from "react-leaflet";
 import ReactDOMServer from "react-dom/server";
 import { IStation } from "../types";
+import "./styles.css";
+import { useEffect, useState } from "react";
 
 type StationMarkerSvgProps = {
   freeBikesCount: number;
+  isPulsing?: boolean;
 };
 
 const StationMarkerSvg: React.FC<StationMarkerSvgProps> = ({
   freeBikesCount,
+  isPulsing,
 }) => {
   let countColor = "#8b0000";
 
@@ -57,6 +61,15 @@ const StationMarkerSvg: React.FC<StationMarkerSvgProps> = ({
         strokeWidth="3"
         aria-labelledby="donut-segment-1-title donut-segment-1-desc"
       ></circle>
+      {isPulsing && (
+        <circle
+          className="pulse"
+          cx="50%"
+          cy="50%"
+          r="10px"
+          stroke={countColor}
+        ></circle>
+      )}
       <g className="chart-text">
         <text
           className="chart-number"
@@ -75,10 +88,20 @@ const StationMarkerSvg: React.FC<StationMarkerSvgProps> = ({
 const StationMarker: React.FC<{
   station: IStation | Pick<IStation, "latitude" | "longitude" | "free_bikes">;
 }> = ({ station }) => {
+  const [isPulsing, setIsPulsing] = useState(false);
+  useEffect(() => {
+    setIsPulsing(true);
+
+    setTimeout(() => setIsPulsing(false), 1800);
+  }, [station?.free_bikes]);
+
   const icon = L.divIcon({
     className: "custom-icon",
     html: ReactDOMServer.renderToString(
-      <StationMarkerSvg freeBikesCount={station.free_bikes || 0} />
+      <StationMarkerSvg
+        freeBikesCount={station.free_bikes || 0}
+        isPulsing={isPulsing}
+      />
     ),
   });
 

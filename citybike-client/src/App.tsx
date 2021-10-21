@@ -41,6 +41,15 @@ const App: React.FC = () => {
         }
 
         setStations(data.stations ?? []);
+
+        // Use this setStations for showing demo of changing bike count
+        // setStations(
+        //   data.stations.map((station, i) => ({
+        //     ...station,
+        //     free_bikes:
+        //       i % 2 === 0 ? Math.floor(Math.random() * 11) : station.free_bikes,
+        //   })) ?? []
+        // );
       }
     );
 
