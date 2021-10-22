@@ -23,6 +23,8 @@ export interface ICityBikeContext {
   currentTimestamp: string;
   freeBikesCount: number;
   emptySlotsCount: number;
+  hasLoaded: boolean;
+  hasError: boolean;
 }
 
 const CityBikeContext = createContext<ICityBikeContext | undefined>(undefined);
@@ -41,6 +43,8 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
   const [historyIndexOnView, setHistoryIndexOnView] = useState<number | null>(
     null
   );
+  const [hasLoaded, setHasLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<any | null>(null);
 
   useEffect(() => {
     const socket = socketIOClient(API_DEV_ENDPOINT);
@@ -48,21 +52,35 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
     socket.on(
       "CityBike",
       (data?: {
-        location: {
+        location?: {
           latitude: number;
           longitude: number;
         };
-        stations: IStation[];
+        stations?: IStation[];
+        error?: any;
       }) => {
         if (!data) {
+          setError("No data fetched");
           return;
         }
 
-        if (data.location?.latitude && data.location?.longitude) {
-          setMapState((mapState) => ({
-            ...mapState,
-            position: [data.location.latitude, data.location.longitude],
-          }));
+        if (data.error) {
+          setError(data.error);
+          return;
+        }
+
+        if (data?.location) {
+          const position: [number, number] = [
+            data.location.latitude,
+            data.location.longitude,
+          ];
+
+          if (position.every((coord) => coord)) {
+            setMapState((mapState) => ({
+              ...mapState,
+              position,
+            }));
+          }
         }
 
         const stations = data?.stations ?? [];
@@ -93,6 +111,8 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
               ? history[history.length - 1]
               : "";
 
+            setHasLoaded(true);
+            setError(null);
             if (latestTimestamp !== latestHistoryItemTimestamp) {
               return [
                 ...(history.length > MAX_HISTORY_LENGTH
@@ -196,6 +216,8 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
         emptySlotsCount: stations.reduce((count, st) => {
           return count + (st.empty_slots ?? 0);
         }, 0),
+        hasLoaded,
+        hasError: Boolean(error),
       }}
     >
       {children}

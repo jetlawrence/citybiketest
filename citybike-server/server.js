@@ -42,7 +42,7 @@ const getApiAndEmit = (socket) => {
     })
     .catch((error) => {
       console.log(error);
-      socket.emit("CityBike", "Error getting data");
+      socket.emit("CityBike", { error });
     });
 };
 
