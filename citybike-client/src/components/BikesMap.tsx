@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   MapContainer,
   MapContainerProps,
@@ -16,12 +16,37 @@ type ChangeViewProps = Pick<MapContainerProps, "center" | "zoom">;
 
 const ChangeView: React.FC<ChangeViewProps> = ({ center }) => {
   const map = useMap();
+  const prevCenterRef = useRef<MapContainerProps["center"]>();
 
   useEffect(() => {
-    if (center) {
+    if (!center) {
+      return;
+    }
+
+    const getLatLngFromCenter = (c: MapContainerProps["center"]) => {
+      let lat;
+      let lng;
+      if (Array.isArray(c)) {
+        lat = c[0];
+        lng = c[1];
+      } else {
+        lat = c?.lat;
+        lng = c?.lng;
+      }
+
+      return [lat, lng];
+    };
+
+    if (
+      !getLatLngFromCenter(center).every(
+        (coord, i) => getLatLngFromCenter(prevCenterRef.current)[i] === coord
+      )
+    ) {
       map.setView(center);
     }
-  }, []);
+
+    prevCenterRef.current = center;
+  }, [center, map]);
 
   return null;
 };
