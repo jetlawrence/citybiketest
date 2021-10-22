@@ -10,7 +10,15 @@ const App: React.FC = () => {
     <div className="map">
       <div className="Header">
         <h1> City Bikes in Miami </h1>
-        <ControlPanel />
+        <ControlPanel
+          onFastBackward={cityBike?.onFastBackward}
+          onFastForward={cityBike?.onFastForward}
+          onStepBackward={cityBike?.onStepBackward}
+          onStepForward={cityBike?.onStepForward}
+          onPlay={cityBike?.onPlay}
+          onPause={cityBike?.onPause}
+          isPaused={cityBike?.historyIndexOnView !== null}
+        />
       </div>
 
       {cityBike?.mapState && (

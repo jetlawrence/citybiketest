@@ -19,7 +19,7 @@ export interface ICityBikeContext {
   onStepBackward: () => void;
   onPlay: () => void;
   onPause: () => void;
-  isPaused: boolean;
+  historyIndexOnView: number | null;
 }
 
 const CityBikeContext = createContext<ICityBikeContext | undefined>(undefined);
@@ -69,7 +69,7 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
         //   ...station,
         //   free_bikes:
         //     i % 2 === 0 ? Math.floor(Math.random() * 11) : station.free_bikes,
-        //   timestamp: new Date().toISOString(),
+        //   timestamp: new Date(),
         // }));
 
         const updateHistory = () =>
@@ -132,17 +132,19 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
   };
 
   const onStepBackward = () => {
-    if (!historyIndexOnView) {
+    if (historyIndexOnView === null) {
       if (history.length) {
         setHistoryIndexOnView(Math.max(history.length - 2, 0));
       }
     } else {
-      setHistoryIndexOnView(Math.max(historyIndexOnView - 1, 0));
+      setHistoryIndexOnView(
+        historyIndexOnView < 1 ? 0 : historyIndexOnView - 1
+      );
     }
   };
 
   const onStepForward = () => {
-    if (!historyIndexOnView) {
+    if (historyIndexOnView === null) {
       if (history.length) {
         setHistoryIndexOnView(Math.max(history.length - 1, 0));
       }
@@ -179,7 +181,7 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
         onStepForward,
         onPlay,
         onPause,
-        isPaused: historyIndexOnView !== null,
+        historyIndexOnView,
       }}
     >
       {children}

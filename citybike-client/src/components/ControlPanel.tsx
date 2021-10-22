@@ -17,41 +17,47 @@ type ControlButtonProps = {
 };
 
 const ControlButton: React.FC<ControlButtonProps> = ({ icon, onClick }) => (
-  <div className="ControlPanel__Button" onClick={onClick}>
+  <button className="ControlPanel__Button" onClick={onClick}>
     <FontAwesomeIcon size="lg" icon={icon} />
-  </div>
+  </button>
 );
 
 type ControlPanelProps = {
   isPaused?: boolean;
-  onFastForward: () => void;
-  onFastBackward: () => void;
-  onStepForward: () => void;
-  onStepBackward: () => void;
-  onPlay: () => void;
-  onPause: () => void;
+  onFastForward?: () => void;
+  onFastBackward?: () => void;
+  onStepForward?: () => void;
+  onStepBackward?: () => void;
+  onPlay?: () => void;
+  onPause?: () => void;
+  isOnFirst?: boolean;
+  isOnLast?: boolean;
 };
+
+const noop = () => {};
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
   isPaused = false,
-  onFastBackward,
-  onFastForward,
-  onStepBackward,
-  onStepForward,
-  onPlay,
-  onPause,
+  onFastBackward = noop,
+  onFastForward = noop,
+  onStepBackward = noop,
+  onStepForward = noop,
+  onPlay = noop,
+  onPause = noop,
+  isOnFirst,
+  isOnLast,
 }) => {
   return (
     <div className="ControlPanel">
       <ControlButton icon={faFastBackward} onClick={onFastBackward} />
-      <ControlButton icon={faStepBackward} onClick={onFastForward} />
+      <ControlButton icon={faStepBackward} onClick={onStepBackward} />
       {!isPaused ? (
         <ControlButton icon={faPause} onClick={onPause} />
       ) : (
         <ControlButton icon={faPlayCircle} onClick={onPlay} />
       )}
       <ControlButton icon={faStepForward} onClick={onStepForward} />
-      <ControlButton icon={faFastForward} onClick={onStepBackward} />
+      <ControlButton icon={faFastForward} onClick={onFastForward} />
     </div>
   );
 };
