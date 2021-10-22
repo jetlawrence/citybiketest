@@ -48,6 +48,8 @@ const App: React.FC = () => {
             onPlay={cityBike?.onPlay}
             onPause={cityBike?.onPause}
             isPaused={cityBike?.historyIndexOnView !== null}
+            canRewind={cityBike.canRewind}
+            canForward={cityBike.canForward}
           />
         )}
       </div>

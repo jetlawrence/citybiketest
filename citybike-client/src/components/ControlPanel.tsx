@@ -14,11 +14,24 @@ import {
 type ControlButtonProps = {
   icon: FontAwesomeIconProps["icon"];
   onClick: () => void;
+  disabled?: boolean;
 };
 
-const ControlButton: React.FC<ControlButtonProps> = ({ icon, onClick }) => (
-  <button className="ControlPanel__Button" onClick={onClick}>
-    <FontAwesomeIcon size="lg" icon={icon} />
+const ControlButton: React.FC<ControlButtonProps> = ({
+  icon,
+  onClick,
+  disabled,
+}) => (
+  <button
+    className="ControlPanel__Button"
+    onClick={onClick}
+    disabled={disabled}
+  >
+    <FontAwesomeIcon
+      size="lg"
+      icon={icon}
+      color={disabled ? "gray" : "black"}
+    />
   </button>
 );
 
@@ -30,8 +43,8 @@ type ControlPanelProps = {
   onStepBackward?: () => void;
   onPlay?: () => void;
   onPause?: () => void;
-  isOnFirst?: boolean;
-  isOnLast?: boolean;
+  canRewind?: boolean;
+  canForward?: boolean;
 };
 
 const noop = () => {};
@@ -44,20 +57,36 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   onStepForward = noop,
   onPlay = noop,
   onPause = noop,
-  isOnFirst,
-  isOnLast,
+  canRewind,
+  canForward,
 }) => {
   return (
     <div className="ControlPanel">
-      <ControlButton icon={faFastBackward} onClick={onFastBackward} />
-      <ControlButton icon={faStepBackward} onClick={onStepBackward} />
+      <ControlButton
+        icon={faFastBackward}
+        onClick={onFastBackward}
+        disabled={!canRewind}
+      />
+      <ControlButton
+        icon={faStepBackward}
+        onClick={onStepBackward}
+        disabled={!canRewind}
+      />
       {!isPaused ? (
         <ControlButton icon={faPause} onClick={onPause} />
       ) : (
         <ControlButton icon={faPlayCircle} onClick={onPlay} />
       )}
-      <ControlButton icon={faStepForward} onClick={onStepForward} />
-      <ControlButton icon={faFastForward} onClick={onFastForward} />
+      <ControlButton
+        icon={faStepForward}
+        onClick={onStepForward}
+        disabled={!canForward}
+      />
+      <ControlButton
+        icon={faFastForward}
+        onClick={onFastForward}
+        disabled={!canForward}
+      />
     </div>
   );
 };

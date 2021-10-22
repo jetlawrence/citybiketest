@@ -25,6 +25,8 @@ export interface ICityBikeContext {
   emptySlotsCount: number;
   hasLoaded: boolean;
   hasError: boolean;
+  canRewind?: boolean;
+  canForward?: boolean;
 }
 
 const CityBikeContext = createContext<ICityBikeContext | undefined>(undefined);
@@ -108,7 +110,7 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
             ).toISOString();
 
             const latestHistoryItemTimestamp = history.length
-              ? history[history.length - 1]
+              ? history[history.length - 1].timestamp
               : "";
 
             setHasLoaded(true);
@@ -218,6 +220,12 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
         }, 0),
         hasLoaded,
         hasError: Boolean(error),
+        canRewind:
+          (historyIndexOnView === null && history.length > 1) ||
+          (historyIndexOnView !== null && historyIndexOnView > 0),
+        canForward:
+          historyIndexOnView !== null &&
+          historyIndexOnView < history.length - 1,
       }}
     >
       {children}
