@@ -71,14 +71,6 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
         //     i % 2 === 0 ? Math.floor(Math.random() * 11) : station.free_bikes,
         //   timestamp: new Date().toISOString(),
         // }));
-        // setStations(
-        //   data.stations.map((station, i) => ({
-        //     ...station,
-        //     free_bikes:
-        //       i % 2 === 0 ? Math.floor(Math.random() * 11) : station.free_bikes,
-        //     timestamp: new Date().toISOString()
-        //   })) ?? []
-        // );
 
         const updateHistory = () =>
           setHistory((history) => {
