@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { Marker } from "react-leaflet";
+import { Marker, Popup } from "react-leaflet";
 import ReactDOMServer from "react-dom/server";
 import { IStation } from "../types";
 import "./styles.css";
@@ -86,7 +86,12 @@ const StationMarkerSvg: React.FC<StationMarkerSvgProps> = ({
 };
 
 const StationMarker: React.FC<{
-  station: IStation | Pick<IStation, "latitude" | "longitude" | "free_bikes">;
+  station:
+    | IStation
+    | Pick<
+        IStation,
+        "name" | "latitude" | "longitude" | "free_bikes" | "empty_slots"
+      >;
 }> = ({ station }) => {
   const [isPulsing, setIsPulsing] = useState(false);
   useEffect(() => {
@@ -103,6 +108,7 @@ const StationMarker: React.FC<{
         isPulsing={isPulsing}
       />
     ),
+    popupAnchor: [18, 0],
   });
 
   if (!(station.latitude && station.longitude)) {
@@ -110,7 +116,15 @@ const StationMarker: React.FC<{
   }
 
   return (
-    <Marker position={[station.latitude, station.longitude]} icon={icon} />
+    <Marker position={[station.latitude, station.longitude]} icon={icon}>
+      <Popup>
+        <div>
+          <h3>{station.name}</h3>
+          <div>{`Free bikes: ${station.free_bikes}`}</div>
+          <div>{`Empty slots: ${station.empty_slots}`}</div>
+        </div>
+      </Popup>
+    </Marker>
   );
 };
 
