@@ -20,6 +20,9 @@ export interface ICityBikeContext {
   onPlay: () => void;
   onPause: () => void;
   historyIndexOnView: number | null;
+  currentTimestamp: string;
+  freeBikesCount: number;
+  emptySlotsCount: number;
 }
 
 const CityBikeContext = createContext<ICityBikeContext | undefined>(undefined);
@@ -165,16 +168,20 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
     }
   };
 
+  const currentTimestamp =
+    history[
+      historyIndexOnView !== null ? historyIndexOnView : history.length - 1
+    ]?.timestamp;
+  const stations =
+    history?.[
+      historyIndexOnView !== null ? historyIndexOnView : history.length - 1
+    ]?.stations ?? [];
+
   return (
     <CityBikeContext.Provider
       value={{
         mapState,
-        stations:
-          history?.[
-            historyIndexOnView !== null
-              ? historyIndexOnView
-              : history.length - 1
-          ]?.stations ?? [],
+        stations,
         onFastBackward,
         onFastForward,
         onStepBackward,
@@ -182,6 +189,13 @@ const CityBikeContextProvider: React.FC = ({ children }) => {
         onPlay,
         onPause,
         historyIndexOnView,
+        currentTimestamp,
+        freeBikesCount: stations.reduce((count, st) => {
+          return count + (st.free_bikes ?? 0);
+        }, 0),
+        emptySlotsCount: stations.reduce((count, st) => {
+          return count + (st.empty_slots ?? 0);
+        }, 0),
       }}
     >
       {children}

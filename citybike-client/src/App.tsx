@@ -9,7 +9,24 @@ const App: React.FC = () => {
   return (
     <div className="map">
       <div className="Header">
-        <h1> City Bikes in Miami </h1>
+        <div>
+          <h1> City Bikes in Miami </h1>
+          <div>
+            <div>
+              {`As of ${
+                cityBike?.currentTimestamp
+                  ? new Date(cityBike.currentTimestamp).toLocaleString()
+                  : ""
+              }`}{" "}
+            </div>
+            <div
+              style={{ marginLeft: "10px" }}
+            >{`${cityBike?.freeBikesCount} free bikes`}</div>
+            <div
+              style={{ marginLeft: "10px" }}
+            >{`${cityBike?.emptySlotsCount} empty slots`}</div>
+          </div>
+        </div>
         <ControlPanel
           onFastBackward={cityBike?.onFastBackward}
           onFastForward={cityBike?.onFastForward}
